@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Imports;
+
+use App\Jobs\UpdateReportJob;
+use App\Models\Report;
+use App\Models\ReportCategory;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Illuminate\Support\Facades\Session;
+
+class ReportsImport implements ToCollection
+{
+    /**
+     * @param  Collection  $collection
+     */
+    public function collection(Collection $collection): void
+    {
+        $skipFirstRow = true; // Переменная для пропуска первой строки
+        $previousMonth = Carbon::now()->subMonth();
+
+        // Создаем или находим категорию отчета
+        $category = ReportCategory::firstOrCreate([
+            'report_date' => $previousMonth->isoFormat('MMMM YYYY')
+        ]);
+
+
+        // Проверяем, есть ли отчеты в категории
+        if ($category->reports()->exists()) {
+            // Категория не пуста, отправляем сообщение об ошибке через сессию
+            Session::flash('error', "Отчет за {$previousMonth->isoFormat('MMMM YYYY')} уже существует.");
+            return; // Прекращаем выполнение импорта
+        }
+
+        $totalSum = 0;
+        $totalReward = 0;
+
+        // Инициализируем массив для хранения соответствий типов сделок и переменных для подсчета
+        $dealTypesCount = [
+            'L-агент' => 0,
+            'S-агент' => 0,
+            'D-агент' => 0
+        ];
+
+        $reportsData = []; // Массив для хранения уникальных записей
+
+        foreach ($collection as $row) {
+            if ($skipFirstRow) {
+                $skipFirstRow = false;
+                continue; // Пропустить первую строку
+            }
+
+            if (!isset($row[0])) {
+                continue;
+            }
+
+            $check = $row[2]; // Значение поля 'check'
+
+            $sum = is_numeric($row[3]) && !empty($row[3]) ? $row[3] : 0;
+            $reward = is_numeric($row[4]) && !empty($row[4]) ? $row[4] : 0;
+
+            // Если запись с таким 'check' уже существует, обновляем суммы
+            if (isset($reportsData[$check])) {
+                $reportsData[$check]['sum'] += $sum;
+                $reportsData[$check]['reward'] += $reward;
+            } else {
+                // Создаем новую запись в массиве
+                $reportsData[$check] = [
+                    'inn' => $row[0],
+                    'name' => $row[1],
+                    'check' => $check,
+                    'sum' => $sum,
+                    'reward' => $reward,
+                    'role' => $row[5],
+                    'type' => $row[6],
+                    'product' => $row[7],
+                    'report_date' => $previousMonth->isoFormat('MMMM YYYY'),
+                ];
+            }
+
+            // Проверяем, является ли сделка типом L, S или D и увеличиваем соответствующий счетчик
+            if (array_key_exists($row[5], $dealTypesCount)) {
+                $dealTypesCount[$row[5]]++;
+            }
+
+            // Подсчет общих сумм
+            $totalSum += $sum;
+            $totalReward += $reward;
+        }
+
+        // Сохраняем уникальные отчеты в базу данных
+        foreach ($reportsData as $reportData) {
+            $report = new Report($reportData);
+            $category->reports()->save($report);
+        }
+
+        // Подсчет количества отчетов
+        $totalDeals = count($reportsData);
+
+        // Сохраняем общую сумму, вознаграждение и количество сделок типа L в категорию отчета
+        $category->total_sum = $totalSum;
+        $category->total_reward = $totalReward;
+        $category->total_deals = $totalDeals;
+        $category->total_l_deals = $dealTypesCount['L-агент'];
+        $category->total_s_deals = $dealTypesCount['S-агент'];
+        $category->total_d_deals = $dealTypesCount['D-агент'];
+        $category->save();
+
+
+
+        // Если выполнение дошло сюда, значит импорт прошел успешно
+        Session::flash('success', 'Отчет успешно импортирован.');
+    }
+}
+
+
