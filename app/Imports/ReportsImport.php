@@ -33,15 +33,15 @@ class ReportsImport implements ToCollection
             return; // Прекращаем выполнение импорта
         }
 
-        $totalSum = 0;
-        $totalReward = 0;
+//        $totalSum = 0;
+//        $totalReward = 0;
 
         // Инициализируем массив для хранения соответствий типов сделок и переменных для подсчета
-        $dealTypesCount = [
-            'L-агент' => 0,
-            'S-агент' => 0,
-            'D-агент' => 0
-        ];
+//        $dealTypesCount = [
+//            'L-агент' => 0,
+//            'S-агент' => 0,
+//            'D-агент' => 0
+//        ];
 
         $reportsData = []; // Массив для хранения уникальных записей
 
@@ -80,13 +80,13 @@ class ReportsImport implements ToCollection
             }
 
             // Проверяем, является ли сделка типом L, S или D и увеличиваем соответствующий счетчик
-            if (array_key_exists($row[5], $dealTypesCount)) {
-                $dealTypesCount[$row[5]]++;
-            }
+//            if (array_key_exists($row[5], $dealTypesCount)) {
+//                $dealTypesCount[$row[5]]++;
+//            }
 
             // Подсчет общих сумм
-            $totalSum += $sum;
-            $totalReward += $reward;
+//            $totalSum += $sum;
+//            $totalReward += $reward;
         }
 
         // Сохраняем уникальные отчеты в базу данных
@@ -96,16 +96,16 @@ class ReportsImport implements ToCollection
         }
 
         // Подсчет количества отчетов
-        $totalDeals = count($reportsData);
+//        $totalDeals = count($reportsData);
 
         // Сохраняем общую сумму, вознаграждение и количество сделок типа L в категорию отчета
-        $category->total_sum = $totalSum;
-        $category->total_reward = $totalReward;
-        $category->total_deals = $totalDeals;
-        $category->total_l_deals = $dealTypesCount['L-агент'];
-        $category->total_s_deals = $dealTypesCount['S-агент'];
-        $category->total_d_deals = $dealTypesCount['D-агент'];
-        $category->save();
+//        $category->total_sum = $totalSum;
+//        $category->total_reward = $totalReward;
+//        $category->total_deals = $totalDeals;
+//        $category->total_l_deals = $dealTypesCount['L-агент'];
+//        $category->total_s_deals = $dealTypesCount['S-агент'];
+//        $category->total_d_deals = $dealTypesCount['D-агент'];
+        //$category->save();
 
 
 

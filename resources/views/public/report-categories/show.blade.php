@@ -9,7 +9,7 @@
             <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                  viewBox="0 0 20 20">
                 <path
-                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
             </svg>
             <span class="sr-only">Info</span>
             <div class="ms-3 text-sm font-medium">
@@ -34,11 +34,81 @@
 
     <section>
 
+
         <x-form.table-wrapper>
 
+            <div class="mb-12 border rounded-lg">
+
+                <x-form.table>
+                    <thead>
+                    <tr class="text-base">
+                        <x-table.th colspan="7">
+
+                            <div class="text-base font-bold">
+                                Статистика по отчёту за {{ $category->report_date }}
+                            </div>
 
 
+                        </x-table.th>
+                        <x-table.th colspan="2" class="border-l border-r text-center">Соответствие CRM</x-table.th>
+                        <x-table.th colspan="4" class="border-l text-center">Нет в CRM</x-table.th>
 
+                    </tr>
+                    <tr class="border-b">
+                        <x-table.th scope="col" class="font-normal">Дата отчета</x-table.th>
+                        <x-table.th scope="col" class="font-normal">Сумма по продукту</x-table.th>
+                        <x-table.th scope="col" class="font-normal">Вознаграждения</x-table.th>
+                        <x-table.th scope="col" class="font-normal">Кол-во сделок</x-table.th>
+                        <x-table.th scope="col" class="font-normal">L-сделок</x-table.th>
+                        <x-table.th scope="col" class="font-normal">S-сделок</x-table.th>
+                        <x-table.th scope="col" class="font-normal">D-сделок</x-table.th>
+
+                        <x-table.th scope="col" class="text-green-500 border-r border-l font-normal">Полное</x-table.th>
+                        <x-table.th scope="col" class="text-orange-400 border-r border-l font-normal">Частичное
+                        </x-table.th>
+
+                        <x-table.th scope="col" class="text-red-500 border-r border-l font-normal">Всего</x-table.th>
+                        <x-table.th scope="col" class="text-red-500 border-r border-l font-normal">L-сделки</x-table.th>
+                        <x-table.th scope="col" class="text-red-500 border-r border-l font-normal">S-сделки</x-table.th>
+                        <x-table.th scope="col" class="text-red-500 border-l font-normal">D-сделки</x-table.th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+                    <tr>
+                        <x-table.td>
+                            {{ $category->report_date }}
+                        </x-table.td>
+                        <x-table.td>
+                            <x-sum>{{ number_format($totalSum, 2, '.', ' ') }}</x-sum>
+                        </x-table.td>
+                        <x-table.td>
+                            <x-sum>{{ number_format($totalReward, 2, '.', ' ') }}</x-sum>
+                        </x-table.td>
+                        <x-table.td>{{ count($reports) }}</x-table.td>
+                        <x-table.td> {{ $totallyLAgentElementsCount }}</x-table.td>
+                        <x-table.td> {{ $totallySAgentElementsCount }}</x-table.td>
+                        <x-table.td> {{ $totallyDAgentElementsCount }}</x-table.td>
+
+                        <x-table.td
+                            class="text-green-500 border-r border-l">{{ $readyForExchangeDealsCount }}</x-table.td>
+                        <x-table.td
+                            class="text-orange-400 border-r border-l">{{ $amountsNotEqualDealsCount }}</x-table.td>
+
+                        <x-table.td class="text-red-500 border-r border-l">{{ $notFoundDealsCount }}</x-table.td>
+                        <x-table.td class="text-red-500 border-r border-l">{{ $lAgentElementsCount }}</x-table.td>
+                        <x-table.td class="text-red-500 border-r border-l">{{ $sAgentElementsCount }}</x-table.td>
+                        <x-table.td class="text-red-500 border-l">{{ $dAgentElementsCount }}</x-table.td>
+
+
+                    </tr>
+
+
+                    </tbody>
+                </x-form.table>
+            </div>
 
             <div class="flex justify-between mb-8">
                 <div class="inline-flex rounded-md" role="group">
@@ -75,8 +145,50 @@
                             <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
                             <path d="M16 16h5v5"></path>
                         </x-svg>
-                        Обновить
+                        Обновить сделки
                     </a>
+
+                    <form action="{{ route('report-categories.update', $category->id) }}" method="post">
+                        @csrf
+                        @method('PUT')
+
+                        <input type="text" name="total_sum" value="{{ $totalSum }}" hidden>
+                        <input type="text" name="total_reward" value="{{ $totalReward }}" hidden>
+                        <input type="text" name="total_deals" value="{{ count($reports) }}" hidden>
+
+                        <input type="text" name="total_l_deals" value="{{ $totallyLAgentElementsCount }}" hidden>
+                        <input type="text" name="total_s_deals" value="{{ $totallySAgentElementsCount }}" hidden>
+                        <input type="text" name="total_d_deals" value="{{ $totallyDAgentElementsCount }}" hidden>
+
+                        <input type="text" name="crm_full_compliance" value="{{ $readyForExchangeDealsCount }}" hidden>
+                        <input type="text" name="crm_partial_compliance" value="{{ $amountsNotEqualDealsCount }}" hidden>
+
+                        <input type="text" name="crm_no_deals" value="{{ $notFoundDealsCount }}" hidden>
+                        <input type="text" name="crm_no_s_deals" value="{{ $lAgentElementsCount }}" hidden>
+                        <input type="text" name="crm_no_d_deals" value="{{ $sAgentElementsCount }}" hidden>
+                        <input type="text" name="crm_no_d_deals" value="{{ $dAgentElementsCount }}" hidden>
+                        <input type="text" name="is_statistics_saved" value="1" hidden>
+
+                        <button {{ !$category->is_statistics_saved ? : 'disabled' }} type="submit"
+                                class="disabled:bg-gray-50 flex items-center px-4 py-2 font-medium text-sm text-gray-500 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:outline-none focus:ring-[#13A2AF]/30 hover:bg-gray-50 focus:z-10">
+                            @if(!$category->is_statistics_saved)
+                                <x-svg class="me-2 text-gray-700">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </x-svg>
+                                Сохранить статистику
+                            @else
+                                <x-svg class="me-2 text-gray-700">
+                                    <path d="M20 6 9 17l-5-5"></path>
+                                </x-svg>
+                                Статистика сохранена
+                            @endif
+
+                        </button>
+                    </form>
+
+
                     <a class="flex items-center px-4 py-2 font-medium text-sm text-gray-500 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:outline-none focus:ring-[#13A2AF]/30 hover:bg-gray-50 focus:z-10"
                        href="#">
 
@@ -121,7 +233,7 @@
                         id="row_{{ $loop->iteration }}" onclick="toggleRowColor('{{ $loop->iteration }}')">
 
                         <x-table.td
-                                class="hover:cursor-pointer border-r text-center">{{ $loop->iteration }}</x-table.td>
+                            class="hover:cursor-pointer border-r text-center">{{ $loop->iteration }}</x-table.td>
                         <x-table.td>{{ $report->inn}}</x-table.td>
                         <x-table.td>
 
@@ -208,7 +320,7 @@
         });
 
         function filterByStatus(status) {
-            const rows = document.querySelectorAll('tbody tr');
+            const rows = document.querySelectorAll('#sort-table tbody tr');
 
 
             rows.forEach(row => {

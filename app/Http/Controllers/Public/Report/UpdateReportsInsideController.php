@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class UpdateReportsInsideController extends Controller
 {
-    public function updateReports(Request $request, $id)
+    public function updateReports($id)
     {
 
         // Получаем все отчеты по заданной категории

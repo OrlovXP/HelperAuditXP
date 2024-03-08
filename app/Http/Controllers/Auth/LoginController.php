@@ -25,20 +25,4 @@ class LoginController extends Controller
 
     }
 
-//    public function store(StoreRequest $request)
-//    {
-//        $data = $request->validated();
-//
-//        if (Auth::attempt($data)) {
-//            $request->session()->regenerate();
-//
-//            return redirect()->route('index');
-//        }
-//
-//        return back()->withErrors([
-//            'email' => __('auth.failed'),
-//        ])->onlyInput('email');
-//
-//
-//    }
 }

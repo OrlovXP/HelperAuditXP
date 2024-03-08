@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Public\User;
+namespace App\Http\Controllers\Public\Product;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -13,7 +13,9 @@ class IndexController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $users = User::with('role')->get();
-        return view('public.users.index', compact('users'));
+        $products = Product::all();
+
+        return view('public.products.index', compact('products'));
     }
 }
+

@@ -20,6 +20,21 @@ return new class extends Migration
             $table->integer('total_l_deals')->nullable();
             $table->integer('total_s_deals')->nullable();
             $table->integer('total_d_deals')->nullable();
+
+
+
+            $table->integer('crm_full_compliance')->nullable();
+            $table->integer('crm_partial_compliance')->nullable();
+            $table->integer('crm_no_deals')->nullable();
+
+            $table->integer('crm_no_l_deals')->nullable();
+            $table->integer('crm_no_s_deals')->nullable();
+            $table->integer('crm_no_d_deals')->nullable();
+
+            $table->boolean('is_statistics_saved')->default(0);
+            $table->boolean('is_statistics_loaded_crm')->default(0);
+
+
             $table->timestamps();
         });
     }

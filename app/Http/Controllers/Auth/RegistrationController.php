@@ -13,6 +13,7 @@ class RegistrationController extends Controller
         $data = $request->validated();
 
         User::query()->create($data);
+
         return redirect()->route('login');
     }
 }

@@ -44,12 +44,12 @@ class TestController extends Controller
 }
 
 
-$queryUrl = 'https://sckontur.bitrix24.ru/rest/141/pdwgkucetdezzjk2/crm.deal.update.json';
-$queryData = array(
-    "ID" => $item['ID_DEAL'],
-    "FIELDS" => array(
-        "STAGE_ID" => 'C11:WON',
-        "UF_CRM_1450794143" => $item['REWARD'],
-        "UF_CRM_1534334407" => $item['AGENT_REPORT_FOR'],
-    )
-);
+//$queryUrl = 'https://sckontur.bitrix24.ru/rest/141/pdwgkucetdezzjk2/crm.deal.update.json';
+//$queryData = array(
+//    "ID" => $item['ID_DEAL'],
+//    "FIELDS" => array(
+//        "STAGE_ID" => 'C11:WON',
+//        "UF_CRM_1450794143" => $item['REWARD'],
+//        "UF_CRM_1534334407" => $item['AGENT_REPORT_FOR'],
+//    )
+//);

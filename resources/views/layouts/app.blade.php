@@ -23,16 +23,21 @@
         </div>
         <aside class="mt-6 px-6">
 
-            <div class="mb-7">
-                <div class="text-gray-300 text-base mb-2">
-                    {{ __('Пользователи') }}
-                </div>
-                <ul class="menu-sec">
-                    <x-menu.item href="{{ route('users.index') }}">{{ __('Все') }}</x-menu.item>
-                    <x-menu.item href="#">{{ __('Добавить') }}</x-menu.item>
 
-                </ul>
-            </div>
+            @if(auth()->user()->role->name === 'admin')
+                <div class="mb-7">
+                    <div class="text-gray-300 text-base mb-2">
+                        {{ __('Пользователи') }}
+                    </div>
+                    <ul class="menu-sec">
+                        <x-menu.item href="{{ route('users.index') }}">{{ __('Все') }}</x-menu.item>
+                        <x-menu.item href="#">{{ __('Добавить') }}</x-menu.item>
+
+                    </ul>
+                </div>
+            @endif
+
+
 
 
             <div class="mb-7">
@@ -40,7 +45,7 @@
                     {{ __('Билли') }}
                 </div>
                 <ul class="menu-sec">
-                    <x-menu.item href="#">{{ __('Продукты') }}</x-menu.item>
+                    <x-menu.item href="{{ route('products.index') }}">{{ __('Продукты') }}</x-menu.item>
                     <x-menu.item href="#">{{ __('Менеджеры') }}</x-menu.item>
                     <x-menu.item href="#">{{ __('Запросы') }}</x-menu.item>
                 </ul>
@@ -55,17 +60,12 @@
                     <x-menu.item href="{{ route('report-categories.index') }}">{{ __('Все') }}</x-menu.item>
                 </ul>
             </div>
-
-
         </aside>
     </div>
 
     <div class="w-full ml-[275px] px-4 pb-4">
         <header class="h-[4rem] flex items-center justify-end">
-
-
-
-            <div class="">
+            <div>
                 @auth()
 
                     <button id="dropdownNameButton" data-dropdown-toggle="dropdownName"
