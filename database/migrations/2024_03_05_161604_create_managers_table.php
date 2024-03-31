@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('managers', function (Blueprint $table) {
             $table->id();
+
+            $table->string('name');
+            $table->string('id_billing')->nullable();
+            $table->string('id_crm')->nullable();
+
+            $table->boolean('is_active')->default(0);
+
             $table->timestamps();
         });
     }

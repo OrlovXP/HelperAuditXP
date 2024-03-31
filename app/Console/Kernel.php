@@ -12,6 +12,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->command('import:lasttimestamp')->everyMinute()->timezone('Europe/Moscow')->runInBackground();
         // $schedule->command('inspire')->hourly();
     }
 

@@ -35,6 +35,14 @@ class Bitrix24Api
     /**
      * @throws GuzzleException
      */
+    public function getDealId($inn)
+    {
+        $filter = ['=UF_CRM_1587639560' => $inn];
+        // Отправляем запрос с параметрами фильтрации
+        return $this->sendRequest('crm.deal.list', ['filter' => $filter]);
+    }
+
+
     protected function sendRequest($method, $params = [])
     {
         $url = config('bitrix24.rest_endpoint') . "/{$method}.json";

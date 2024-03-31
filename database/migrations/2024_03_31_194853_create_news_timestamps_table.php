@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('news_timestamps', function (Blueprint $table) {
             $table->id();
-
-            $table->string('name'); // Название продукта в crm
-            $table->string('crm_product_id')->nullable(); // ID продукта в crm
-
-
+            $table->string('timestamp')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('news_timestamps');
     }
 };

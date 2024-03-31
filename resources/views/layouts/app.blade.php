@@ -46,8 +46,8 @@
                 </div>
                 <ul class="menu-sec">
                     <x-menu.item href="{{ route('products.index') }}">{{ __('Продукты') }}</x-menu.item>
-                    <x-menu.item href="#">{{ __('Менеджеры') }}</x-menu.item>
-                    <x-menu.item href="#">{{ __('Запросы') }}</x-menu.item>
+                    <x-menu.item href="{{ route('managers.index') }}">{{ __('Менеджеры') }}</x-menu.item>
+                    <x-menu.item href="{{ route('timestamp.index') }}">{{ __('Запросы') }}</x-menu.item>
                 </ul>
             </div>
 

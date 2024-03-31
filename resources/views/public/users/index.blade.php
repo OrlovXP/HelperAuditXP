@@ -79,7 +79,7 @@
                 @foreach($users as $user)
                     <tr class="border-b border-gray-300/50 last:border-none">
                         <x-table.td>{{ $user->id }}</x-table.td>
-                        <x-table.td>{{ $user->last_name.' '.$user->first_name.' '.$user->middle_name}}</x-table.td>
+                        <x-table.td>{{ $user->fio}}</x-table.td>
                         <x-table.td>{{ $user->email }}</x-table.td>
                         <x-table.td>
 
@@ -103,11 +103,11 @@
                         </x-table.td>
                         <x-table.td>
 
-                            <div class="flex gap-2">
+                            <div class="border rounded h-6 w-6 flex items-center justify-center bg-gray-50">
                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit">
+                                    <button type="submit" class="text-red-600 hover:text-red-900 flex items-center justify-center">
                                         <x-svg class="text-red-800">
                                             <path d="M3 6h18"></path>
                                             <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
@@ -118,6 +118,7 @@
                                     </button>
                                 </form>
                             </div>
+
 
                         </x-table.td>
                     </tr>

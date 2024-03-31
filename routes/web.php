@@ -43,8 +43,29 @@ Route::middleware(['auth'])->group(function () {
 
 // Управление продуктами
     Route::get('/products', \App\Http\Controllers\Public\Product\IndexController::class)->name('products.index');
+    Route::get('/products/create', \App\Http\Controllers\Public\Product\CreateController::class)->name('products.create');
+    Route::post('/products', \App\Http\Controllers\Public\Product\StoreController::class)->name('products.store');
+    Route::get('/products/{product}/edit', \App\Http\Controllers\Public\Product\EditController::class)->name('products.edit');
+    Route::put('/products/{product}/update', \App\Http\Controllers\Public\Product\UpdateController::class)->name('products.update');
+    Route::delete('/products/{product}', \App\Http\Controllers\Public\Product\DeleteController::class)->name('products.destroy');
 
-    Route::get('/test', [\App\Http\Controllers\Public\TestController::class, 'testMethod'])->name('test');
+
+// Управление менеджерами
+    Route::get('/managers', \App\Http\Controllers\Public\Manager\IndexController::class)->name('managers.index');
+    Route::get('/managers/create', \App\Http\Controllers\Public\Manager\CreateController::class)->name('managers.create');
+    Route::post('/managers', \App\Http\Controllers\Public\Manager\StoreController::class)->name('managers.store');
+    Route::get('/managers/{manager}/edit', \App\Http\Controllers\Public\Manager\EditController::class)->name('managers.edit');
+    Route::put('/managers/{manager}/update', \App\Http\Controllers\Public\Manager\UpdateController::class)->name('managers.update');
+    Route::delete('/managers/{manager}', \App\Http\Controllers\Public\Manager\DeleteController::class)->name('managers.destroy');
+
+    Route::get('/test-bitrix', [\App\Http\Controllers\Public\TestBitrixController::class, 'testMethod'])->name('test.bitrix');
+    Route::get('/test-billy', [\App\Http\Controllers\Public\TestBillyController::class, 'testMethod'])->name('test.billy');
+
+
+    Route::get('/timestamps', \App\Http\Controllers\Public\Timestamp\IndexController::class)->name('timestamp.index');
+
+
+    Route::get('/test', \App\Http\Controllers\TestController::class)->name('test');
 });
 
 Route::middleware('guest')->group(function () {

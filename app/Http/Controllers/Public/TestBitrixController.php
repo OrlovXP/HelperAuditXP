@@ -8,7 +8,7 @@ use App\Services\Bitrix24Api;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 
-class TestController extends Controller
+class TestBitrixController extends Controller
 {
     protected $bitrixApi;
 
