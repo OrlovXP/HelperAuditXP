@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Report;
+use App\Models\Plan;
 use App\Services\Bitrix24Api;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;

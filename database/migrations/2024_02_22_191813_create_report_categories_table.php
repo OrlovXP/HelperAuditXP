@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('report_categories', function (Blueprint $table) {
             $table->id();
             $table->string('report_date');
+
             $table->double('total_sum')->nullable();
             $table->double('total_reward')->nullable();
             $table->integer('total_deals')->nullable();

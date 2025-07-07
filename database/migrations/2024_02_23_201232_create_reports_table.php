@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('product')->nullable(); // Продукт
             $table->string('report_date')->nullable(); // Дата отчета
             $table->string('status')->nullable(); // Статус
+            $table->timestamp('report_date_for')->nullable();
 
             $table->integer('crm_deal_id')->nullable(); // CRM id сделки
             $table->integer('crm_company_id')->nullable(); // CRM id компании

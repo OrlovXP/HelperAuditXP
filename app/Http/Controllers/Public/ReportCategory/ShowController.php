@@ -16,6 +16,7 @@ class ShowController extends Controller
         // Находим категорию отчета по ее идентификатору
         $category = ReportCategory::findOrFail($id);
 
+
         $reports = $category->reports;
 
         $totalReward = 0;
@@ -60,7 +61,6 @@ class ShowController extends Controller
                 case 'Not found':
                     $notFoundDealsCount++;
 
-                    // Подсчитываем элементы LSD агентов в отчете, если он не найден
                     if ($report->role === 'L-агент') {
                         $lAgentElementsCount++;
                     }
@@ -74,8 +74,6 @@ class ShowController extends Controller
             }
         }
 
-        //dd($lAgentElementsCount);
-        // Возвращаем представление, передавая в него найденную категорию и подсчитанные статусы
         return view('public.report-categories.show',
             compact(
                 'category',

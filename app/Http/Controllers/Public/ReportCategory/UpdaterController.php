@@ -30,6 +30,7 @@ class UpdaterController extends Controller
             'crm_no_s_deals',
             'crm_no_d_deals',
             'is_statistics_saved',
+            'report_date_for'
         ]));
 
         return redirect()->route('report-categories.show', $id)->with('success', 'Статистика сохранена.');

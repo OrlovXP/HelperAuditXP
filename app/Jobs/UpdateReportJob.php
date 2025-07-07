@@ -34,6 +34,7 @@ class UpdateReportJob implements ShouldQueue
                 $deal = $response['result'][0];
 
                 $this->report->crm_deal_id = $deal['ID'];
+
                 $this->report->crm_company_id = $deal['COMPANY_ID'];
 
                 // Проверка суммы
@@ -50,6 +51,7 @@ class UpdateReportJob implements ShouldQueue
 
             } else {
                 // Если сделка не найдена, установить значение "сделка не найдена" в столбец "status"
+                $this->report->crm_company_id = $bitrixApi->getCompanyList($this->report->inn);
                 $this->report->status = 'Not found';
             }
 

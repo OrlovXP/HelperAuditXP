@@ -3,149 +3,65 @@
 namespace App\Http\Controllers;
 
 use App\Components\ImportDataClient;
-use App\Models\NewsTimestamp;
+use App\Jobs\CreateItemRegistry;
+use App\Jobs\GetCompanyClientsB24Job;
+use App\Jobs\ParseListRegistryJob;
+use App\Jobs\UpdateCompanyB24Job;
+use App\Models\Auditor;
+use App\Models\Bitrix24CompanyType;
+use App\Models\Inspection;
+use App\Models\Phone;
+use App\Models\Registry;
+use App\Models\Status;
 use App\Services\Bitrix24Api;
-use App\Services\KonturApi;
-use App\Support\Service\CrudB24BillsService;
-use App\Support\Service\CrudB24DealsService;
+use App\Services\FocusApi;
+use Goutte\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TestController extends Controller
 {
-
     /**
      * @throws GuzzleException
      */
-    public function __invoke()
+    public function __invoke(Bitrix24Api $bitrix24Api)
     {
-        $timestamp = DB::table('news_timestamps')->value('timestamp');
-        if (is_null($timestamp)) {
-            $news = new ImportDataClient();
-            $news = $news->client->request('GET', '/prospectivesales/lasttimestamp',
-                [
-                    'query' => [
-                        'from' => $timestamp,
-                    ]
-                ]
-            );
-            $timestamp = json_decode($news->getBody()->getContents());
 
-            NewsTimestamp::create([
-                'timestamp' => $timestamp,
-            ]);
-        }
+        $bitrix24Api->getAllCompanyClients(0,1);
 
-//        start
-        $news = new ImportDataClient();
-        $news = $news->client->request('GET', '/prospectivesales/news',
-            [
-                'query' => [
-                    'from' => $timestamp, // 31328248831827
-                ]
-            ]
-        );
+//        $registries = Registry::all();
+//
+//        foreach ($registries as $registry) {
+//            $companyLink = 'http://helper.auditxp.ru/audit-organizations/' . $registry->basic_inn;
+//            $fields = [
+//                'UF_CRM_1600944854' => $registry->employees_count, // количество аудиторов
+//                'UF_CRM_1720185071' => $companyLink,
+//            ];
+//
+//            UpdateCompanyB24Job::dispatch($registry->basic_inn, $fields);
+//
+//        }
 
 
-        $news = json_decode($news->getBody()->getContents());
+// {$this->ornz}
 
-        if (!empty($news->News)) {
-            foreach ($news->News as $new) {
-                $deal = new CrudB24DealsService();
-                $id = $deal->search($new->Id);
-
-                if ($deal->searchCompany($new->Organization->Inn) === null) {
-                    $company = [
-                        'name' => $new->Organization->Name,
-                        'inn' => $new->Organization->Inn,
-                        'product' => $new->Product->Name,
-                        'contacts' => $new->Contacts,
-                        'assigned' => setManager($new->Manager, $new->SalesChannel),
-                    ];
-                    $deal->addCompany($company);
-                }
-
-                if (is_null($id) and $deal->stageCheck($new->Id) === null) {
-                    $deal->add('13', [
-                        'title' => 'ПП '.$new->Organization->Inn.'-'.$new->Product->Name,
-                        'id_new' => $new->Id,
-                        'inn' => $new->Organization->Inn,
-                        'kpp' => $new->Organization->Kpp,
-                        'product' => $new->Product->Name,
-                        'status' => $new->Type,
-                        'assigned' => setManager($new->Manager, $new->SalesChannel),
-                        'bills' => $new->Bills,
-                        'fail' => $new->Status->ClientRefuseReasonId,
-                        'estimated_closing_date' => $new->LifeTime,
-                    ]);
-
-                    $id = $deal->search($new->Id);
-                    foreach ($new->Bills as $item) {
-                        $bill = new CrudB24BillsService();
-                        $bill->add($id, [
-                            'title' => $item->Number,
-                            'id_bill' => $item->BillId,
-                            'amount' => $item->Amount,
-                            'id_deal' => $new->Id,
-                            'stage' => $item->State,
-                            'assigned' => setManager($new->Manager, $new->SalesChannel),
-                            'company' => $new->Organization->Inn,
-                            'payment_date' => $item->PaymentDate,
-                            'create_date' => $item->CreateDate,
-                            'link' => $item->BillId,
-                        ]);
-                    }
-                } else {
-                    if ($deal->stageCheck($new->Id) !== true) {
-                        $deal->update($deal->search($new->Id), [
-                            'title' => 'ПП '.$new->Organization->Inn.'-'.$new->Product->Name,
-                            'assigned' => setManager($new->Manager, $new->SalesChannel),
-                            'bills' => $new->Bills,
-                            'fail' => $new->Status->ClientRefuseReasonId,
-                            'stages_id' => $new->Stages,
-                        ]);
-
-                        foreach ($new->Bills as $item) {
-                            $bill = new CrudB24BillsService();
-                            $bill_id = $bill->search($item->BillId);
-                            $deal_id = $deal->search($new->Id);
-
-                            if (is_null($bill_id)) {
-                                $bill->add($deal_id, [
-                                    'title' => $item->Number,
-                                    'id_bill' => $item->BillId,
-                                    'amount' => $item->Amount,
-                                    'id_deal' => $new->Id,
-                                    'stage' => $item->State,
-                                    'assigned' => setManager($new->Manager, $new->SalesChannel),
-                                    'company' => $new->Organization->Inn,
-                                    'payment_date' => $item->PaymentDate,
-                                    'create_date' => $item->CreateDate,
-                                    'link' => $item->BillId,
-                                ]);
-                            } else {
-                                $bill->update($bill_id, [
-                                    'title' => $item->Number,
-                                    'stage' => $item->State,
-                                    'assigned' => setManager($new->Manager, $new->SalesChannel),
-                                    'company' => $new->Organization->Inn,
-                                    'payment_date' => $item->PaymentDate,
-                                    'create_date' => $item->CreateDate,
-                                ]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-//        stop
+//        dump($bitrix24Api->getAllCompanyClients()); // 4093
+//        $registry = Registry::where('basic_inn', '7735060400')->first();
+//        dd($registry->employees_count);
+        //dump($bitrix24Api->updateCompanyB24(6774, ['UF_CRM_1720185071' => '7735060400', 'UF_CRM_1600944854' => 5]));
+        // 7735060400
 
 
-        DB::table('news_timestamps')->delete();
+//        DB::table('phones')->delete();
+//        DB::table('registries')->delete();
+//        DB::table('inspections')->delete();
+//        DB::table('auditors')->delete();
+//        DB::table('bitrix24_company_type')->delete();
+//        DB::table('jobs')->delete();
+//        DB::table('failed_jobs')->delete();
+//        DB::table('plans')->delete();
+//        dd();
 
-        NewsTimestamp::create([
-            'timestamp' => $news->NextTimestamp,
-        ]);
+
     }
 }

@@ -8,12 +8,12 @@
         @csrf
         <div>
             <x-form.label for="email">{{ __('Почта:') }}</x-form.label>
-            <x-form.text type="email" name="email" id="email" placeholder="name@company.com"/>
+            <x-form.text type="email" name="email" id="email"/>
         </div>
 
         <div>
             <x-form.label for="password">{{ __('Пароль:') }}</x-form.label>
-            <x-form.text type="password" name="password" id="password" placeholder="••••••••"/>
+            <x-form.text type="password" name="password" id="password"/>
         </div>
 
         <x-button type="submit">{{ __('Войти') }}</x-button>

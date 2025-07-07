@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-namespace App\Services;
-
 use App\Models\NewsTimestamp;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -54,7 +52,7 @@ class KonturApi
         // URL для запроса новостей
         $apiToken = config('kontur.apiToken');
         $apiUrl = config('kontur.apiUrl');
-        $url = $apiUrl . '/prospectivesales/news/';
+        $url = $apiUrl.'/prospectivesales/news/';
 
         try {
             // Отправляем GET-запрос к указанному URL
@@ -73,10 +71,30 @@ class KonturApi
             return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
             // Обработка ошибки, если запрос не удался
-            return ['error' => 'Не удалось получить новости: ' . $e->getMessage()];
+            return ['error' => 'Не удалось получить новости: '.$e->getMessage()];
         }
     }
 
+    public function printDeal($id = null)
+    {
+        if ($id === null || trim($id) === '') {
+            return null;  // return null or throw an exception, depending on your requirements
+        }
+
+        $apiToken = config('kontur.apiToken');
+        $apiUrl = config('kontur.apiUrl');
+        $url = "{$apiUrl}/prospectivesales/{$id}/find";
+
+        $client = new Client();
+        $response = $client->request('GET', $url, [
+            'headers' => [
+                'x-Auth-CustomToken' => $apiToken,
+                'Accept' => 'application/json',
+            ],
+        ]);
+
+        return json_decode($response->getBody()->getContents());
+    }
 
     public function saveTimestamp($timestamp)
     {

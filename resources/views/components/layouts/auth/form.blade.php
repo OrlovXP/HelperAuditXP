@@ -6,7 +6,8 @@
 
     <title>{{ $title }}</title>
 
-    @vite('resources/css/app.css')
+    <link href="{{ asset('public/build/assets/app-BaMBIA93.css') }}" rel="stylesheet">
+    {{--    @vite('resources/css/app.css')--}}
 
 </head>
 <body>
@@ -15,7 +16,7 @@
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
 
         <div class="mb-6">
-            <img class="w-[180px]" src="{{ asset('images/logo.svg') }}" alt="">
+            <img class="w-[180px]" src="{{ asset('public/images/logo.svg') }}" alt="">
         </div>
 
 
@@ -40,6 +41,7 @@
     </div>
 </section>
 
-@vite('resources/js/app.js')
+<script src="{{ asset('public/build/assets/app-BSSnCqDo.js') }}"></script>
+{{--@vite('resources/js/app.js')--}}
 </body>
 </html>

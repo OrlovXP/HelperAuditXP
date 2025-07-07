@@ -82,7 +82,7 @@
                         <tr class="text-base">
                             <x-table.th colspan="7"></x-table.th>
                             <x-table.th colspan="2" class="border-l border-r text-center">Соответствие CRM</x-table.th>
-                            <x-table.th colspan="4" class="border-l border-r text-center">Нет в CRM</x-table.th>
+                            <x-table.th colspan="4" class="border-l text-center">Нет в CRM</x-table.th>
 
                         </tr>
                         <tr class="border-b">
@@ -105,7 +105,7 @@
                             </x-table.th>
                             <x-table.th scope="col" class="text-red-500 border-r border-l font-normal">S-сделки
                             </x-table.th>
-                            <x-table.th scope="col" class="text-red-500 border-r border-l font-normal">D-сделки
+                            <x-table.th scope="col" class="text-red-500 border-l font-normal">D-сделки
                             </x-table.th>
 
                         </tr>
@@ -132,61 +132,42 @@
                                         {{ 'нет данных' }}
                                     @endif
                                 </x-table.td>
-                                <x-table.td>{{ $category->total_deals ? :'нет данных' }}</x-table.td>
-                                <x-table.td>{{ $category->total_l_deals ? : 'нет данных' }}</x-table.td>
-                                <x-table.td>{{ $category->total_s_deals ? : 'нет данных' }}</x-table.td>
-                                <x-table.td>{{ $category->total_d_deals ? : 'нет данных' }}</x-table.td>
+                                <x-table.td>{{ $category->total_deals ?? 'нет данных' }}</x-table.td>
+                                <x-table.td>{{ $category->total_l_deals ?? 'нет данных' }}</x-table.td>
+                                <x-table.td>{{ $category->total_s_deals ?? 'нет данных' }}</x-table.td>
+                                <x-table.td>{{ $category->total_d_deals ?? 'нет данных' }}</x-table.td>
 
                                 <x-table.td
-                                    class="text-green-500 border-r border-l">{{ $category->crm_full_compliance ? :'нет данных' }}</x-table.td>
+                                    class="text-green-500 border-r border-l">{{ $category->crm_full_compliance ?? 'нет данных' }}</x-table.td>
                                 <x-table.td
-                                    class="text-orange-400 border-r border-l">{{ $category->crm_partial_compliance ? : 'нет данных' }}</x-table.td>
+                                    class="text-orange-400 border-r border-l">{{ $category->crm_partial_compliance ?? 'нет данных' }}</x-table.td>
 
-                                <x-table.td class="text-red-500 border-r border-l">{{ $category->crm_no_deals ? : 'нет данных' }}</x-table.td>
-                                <x-table.td class="text-red-500 border-r border-l">{{ $category->crm_no_l_deals ? : 'нет данных' }}</x-table.td>
-                                <x-table.td class="text-red-500 border-r border-l">{{ $category->crm_no_s_deals ? : 'нет данных' }}</x-table.td>
-                                <x-table.td class="text-red-500 border-r border-l">{{ $category->crm_no_d_deals ? : 'нет данных' }}</x-table.td>
-                                <x-table.td class="text-red-500">
-                                    <button id="dropdownMenuIconButton"
-                                            data-dropdown-toggle="dropdown-{{ $category->id }}"
-                                            class="inline-flex items-center text-sm text-center text-gray-600 focus:ring-0 focus:outline-none"
-                                            type="button">
-                                        <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                             fill="currentColor"
-                                             viewBox="0 0 4 15">
-                                            <path
-                                                d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-                                        </svg>
-                                    </button>
+                                <x-table.td class="text-red-500 border-r border-l">{{ $category->crm_no_deals ?? 'нет данных' }}</x-table.td>
+                                <x-table.td class="text-red-500 border-r border-l">{{ $category->crm_no_l_deals ?? 'нет данных' }}</x-table.td>
+                                <x-table.td class="text-red-500 border-r border-l">{{ $category->crm_no_s_deals ?? 'нет данных' }}</x-table.td>
+                                <x-table.td class="text-red-500">{{ $category->crm_no_d_deals ?? 'нет данных' }}</x-table.td>
 
-                                    <!-- Dropdown menu -->
-                                    <div id="dropdown-{{ $category->id }}" class="z-10 hidden">
-                                        <ul class="text-sm flex flex-col gap-1"
-                                            aria-labelledby="dropdownMenuIconButton">
+                                    @if(auth()->user()->role->name === 'admin')
+                                    <x-table.td>
+                                        <form
+                                            action="{{ route('report-categories.destroy', ['id' => $category->id]) }}"
+                                            method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="border rounded h-6 w-6 flex items-center justify-center bg-gray-50">
+                                                <x-svg class="h-4 w-4 text-red-800">
+                                                    <path d="M3 6h18"></path>
+                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                                    <line x1="10" x2="10" y1="11" y2="17"></line>
+                                                    <line x1="14" x2="14" y1="11" y2="17"></line>
+                                                </x-svg>
+                                            </button>
+                                        </form>
+                                    </x-table.td>
+                                    @endif
 
 
-                                            <li>
-                                                <form
-                                                    action="{{ route('report-categories.destroy', ['id' => $category->id]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="bg-red-500 block rounded-full p-1">
-                                                        <x-svg class="text-white">
-                                                            <path d="M3 6h18"></path>
-                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                            <line x1="10" x2="10" y1="11" y2="17"></line>
-                                                            <line x1="14" x2="14" y1="11" y2="17"></line>
-                                                        </x-svg>
-                                                    </button>
-                                                </form>
-
-                                            </li>
-                                        </ul>
-
-                                    </div>
-                                </x-table.td>
 
                             </tr>
                         @endforeach
